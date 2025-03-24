@@ -1,3 +1,4 @@
+from django.core.mail import send_mail 
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse
 from leads.models import Lead ,Agent
@@ -46,6 +47,14 @@ class  LeadCreateView(CreateView):
      template_name="leads/lead_create.html"
      form_class=LeadModelForm
      success_url='/leads'
+     def form_valid(self,form):
+         #todo send email
+         send_mail(
+             subject="a lead has been created",message="go to the site to see the new lead",
+             from_email="test@test.com",
+             recipient_list=["test2@test.com"]
+         )
+         return super(LeadCreateView,self).form_valid(form)
 
 def lead_create(request):
    form=LeadModelForm()
