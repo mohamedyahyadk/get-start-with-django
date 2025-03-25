@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from leads.models import Lead ,Agent
 from .forms import LeadForm ,LeadModelForm ,CustomUserCreationForm
 # Create your views here.
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView  ,ListView ,DetailView ,CreateView ,UpdateView ,DeleteView
 
 
@@ -26,7 +26,7 @@ def landing_page(request):
       return render(request,'landing.html')
 
 
-class  LeadListView(ListView):
+class  LeadListView(LoginRequiredMixin,ListView):
      template_name="leads/lead_list.html"
      queryset=Lead.objects.all()
      context_object_name='leads'
@@ -40,7 +40,7 @@ def lead_list(request):
 
 
 
-class  LeadDetailtView(DetailView):
+class  LeadDetailtView(LoginRequiredMixin,DetailView):
      template_name="leads/lead_detail.html"
      queryset=Lead.objects.all()
      context_object_name='lead'
@@ -56,7 +56,7 @@ def lead_detail(request,pk):
 
 
 
-class  LeadCreateView(CreateView):
+class  LeadCreateView(LoginRequiredMixin,CreateView):
      template_name="leads/lead_create.html"
      form_class=LeadModelForm
      success_url='/leads'
@@ -84,7 +84,7 @@ def lead_create(request):
 
 
 
-class  LeadUpdateView(UpdateView):
+class  LeadUpdateView(LoginRequiredMixin,UpdateView):
      template_name="leads/lead_update.html"
      queryset=Lead.objects.all()
      form_class=LeadModelForm
@@ -105,7 +105,7 @@ def  lead_update(request ,pk):
    return render(request,"leads/lead_update.html",context)
 
 
-class  LeadDeleteView(DeleteView):
+class  LeadDeleteView(LoginRequiredMixin,DeleteView):
      template_name="leads/lead_delete.html"
      queryset=Lead.objects.all()
      success_url='/leads'
