@@ -8,7 +8,8 @@ from agents.forms import AgentModelForm
 class AgentListView(LoginRequiredMixin,generic.ListView):
     template_name='agents/agent_list.html'
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation=self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
 
 
 
@@ -27,7 +28,8 @@ class AgentDetailView(LoginRequiredMixin,generic.DetailView):
       template_name="agents/agent_detail.html"
       context_object_name="agent"
       def get_queryset(self):
-        return Agent.objects.all()
+        organisation=self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
 
 
 class AgentUpdateView(LoginRequiredMixin,generic.UpdateView):
@@ -35,13 +37,15 @@ class AgentUpdateView(LoginRequiredMixin,generic.UpdateView):
       form_class=AgentModelForm
       success_url=reverse_lazy("agents:agent-list")
       def get_queryset(self):
-        return Agent.objects.all()
+        organisation=self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
       
 
 class AgentDeleteView(LoginRequiredMixin,generic.DeleteView):
       template_name="agents/agent_delete.html"
       success_url=reverse_lazy("agents:agent-list")
       def get_queryset(self):
-        return Agent.objects.all()
+        organisation=self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
 
       
