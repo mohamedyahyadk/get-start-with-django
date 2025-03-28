@@ -1,4 +1,6 @@
 from django.views import generic
+from django.core.mail import send_mail 
+import random
 from django.contrib.auth.mixins import LoginRequiredMixin
 from leads.models import Agent
 from django.urls import reverse_lazy
@@ -20,9 +22,21 @@ class AgentCreateView(OrganisorAndLoginRequiredMixin,generic.CreateView):
       success_url=reverse_lazy("agents:agent-list")
 
       def form_valid(self, form):
-           agent= form.save(commit=False)
-           agent.organisation=self.request.user.userprofile
-           agent.save()
+           user= form.save(commit=False)
+           user.is_agent=True
+           user.is_organisor=False
+           user.set_password(f"{random.randint(0,1000000)}")
+           user.save()
+           Agent.objects.create(
+               user=user,
+               organisation=self.request.user.userprofile
+           )
+           send_mail(
+               subject=" you are invited to be an agent",
+               message="you were added as an agent on dgjcrm .please come loginto start working",
+               from_email="admin@test.com",
+               recipient_list=[user.email]
+           )
            return super(AgentCreateView,self).form_valid(form)
 
 class AgentDetailView(OrganisorAndLoginRequiredMixin,generic.DetailView):
